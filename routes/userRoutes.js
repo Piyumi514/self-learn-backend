@@ -14,3 +14,13 @@ router.post("/add-user", async (req, res) => {
   res.json({ message: "User added successfully" });
 });
 module.exports = router;
+
+//Get users
+router.get("/get-users", async (req, res) => {
+  try {
+    const users = await User.find().select("-password"); // hide password
+    res.json(users);
+  } catch (error) {
+    res.status(500).json({ message: "Server error" });
+  }
+});
