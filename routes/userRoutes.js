@@ -6,12 +6,25 @@ const User = require("../models/User");
 const router = express.Router();
 //Add user
 router.post("/add-user", async (req, res) => {
-  const { email, password } = req.body;
-  const hashedPassword = await bcrypt.hash(password, 10);
+  try {
+    const { email, password } = req.body;
 
-  const newUser = new User({ email, password: hashedPassword });
-  await newUser.save();
-  res.json({ message: "User added successfully" });
+    // Check if email already exists
+    const existingUser = await User.findOne({ email });
+    if (existingUser) {
+      return res.status(400).json({ message: "The same email exists" });
+    }
+
+    const hashedPassword = await bcrypt.hash(password, 10);
+
+    const newUser = new User({ email, password: hashedPassword });
+    await newUser.save();
+
+    res.json({ message: "User added successfully" });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: "Server error" });
+  }
 });
 module.exports = router;
 
