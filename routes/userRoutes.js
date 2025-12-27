@@ -46,4 +46,3 @@ router.put("/update-user/:id", async (req, res) => {
     res.status(500).json({ message: "Update failed" });
   }
 });
-
